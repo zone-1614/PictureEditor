@@ -3,13 +3,18 @@ package com.zone.pictureeditor
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -84,43 +89,53 @@ fun AllFunctions() {
             ConvertToPDFCard()
         }
         Column(Modifier.fillMaxWidth()) {
-            Card3()
+            Drawing()
             SettingsCard()
         }
     }
 }
 
+
+// 编辑图片
 @Composable
 fun EditCard() {
     Card(
-        Modifier
+        elevation = 6.dp,
+        shape = RoundedCornerShape(10.dp),
+        modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.5f)
-            .padding(10.dp),
-        elevation = 6.dp,
-        shape = RoundedCornerShape(10.dp)
+            .padding(10.dp)
     ) {
         Column(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(top = 30.dp)
+            modifier = Modifier
+                .clickable(interactionSource = remember { MutableInteractionSource() },
+                    indication = LocalIndication.current){}
         ) {
             Icon(
                 imageVector = Icons.Default.MailOutline,
                 contentDescription = "Edit",
                 tint = Color(22, 133, 169),
-                modifier = Modifier.width(60.dp).height(60.dp)
+                modifier = Modifier
+                    .padding(top = 30.dp)
+                    .width(60.dp)
+                    .height(60.dp)
             )
             Text(
                 text = "Edit",
                 fontSize = 20.sp,
                 fontFamily = FontFamily.Serif,
-                modifier = Modifier.wrapContentSize().padding(top = 10.dp)
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(top = 10.dp)
             )
         }
     }
 }
 
+// 转化为PDF
 @Composable
 fun ConvertToPDFCard() {
     Card(
@@ -133,27 +148,35 @@ fun ConvertToPDFCard() {
         Column(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(top = 30.dp)
+            modifier = Modifier
+                .clickable(interactionSource = remember { MutableInteractionSource() },
+                    indication = LocalIndication.current){}
         ) {
             Icon(
                 imageVector = Icons.Default.Face,
                 contentDescription = "Convert To PDF",
                 tint = Color(22, 133, 169),
-                modifier = Modifier.width(60.dp).height(60.dp)
+                modifier = Modifier
+                    .padding(top = 30.dp)
+                    .width(60.dp)
+                    .height(60.dp)
             )
             Text(
                 text = "Convert To\n PDF",
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily.Serif,
-                modifier = Modifier.wrapContentSize().padding(top = 10.dp)
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(top = 10.dp)
             )
         }
     }
 }
 
+// 画图
 @Composable
-fun Card3() {
+fun Drawing() {
     Card(
         Modifier
             .fillMaxWidth()
@@ -165,24 +188,32 @@ fun Card3() {
         Column(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(top = 30.dp)
+            modifier = Modifier
+                .clickable(interactionSource = remember { MutableInteractionSource() },
+                    indication = LocalIndication.current){}
         ) {
             Icon(
                 imageVector = Icons.Default.Edit,
                 contentDescription = "Draw",
                 tint = Color(22, 133, 169),
-                modifier = Modifier.width(60.dp).height(60.dp)
+                modifier = Modifier
+                    .padding(top = 30.dp)
+                    .width(60.dp)
+                    .height(60.dp)
             )
             Text(
                 text = "Draw",
                 fontSize = 20.sp,
                 fontFamily = FontFamily.Serif,
-                modifier = Modifier.wrapContentSize().padding(top = 10.dp)
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(top = 10.dp)
             )
         }
     }
 }
 
+// 设置
 @Composable
 fun SettingsCard() {
     Card(
@@ -195,19 +226,26 @@ fun SettingsCard() {
         Column(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(top = 30.dp)
+            modifier = Modifier
+                .clickable(interactionSource = remember { MutableInteractionSource() },
+                    indication = LocalIndication.current){}
         ) {
             Icon(
                 imageVector = Icons.Default.Settings,
                 contentDescription = "Settings",
                 tint = Color(22, 133, 169),
-                modifier = Modifier.width(60.dp).height(60.dp)
+                modifier = Modifier
+                    .padding(top = 30.dp)
+                    .width(60.dp)
+                    .height(60.dp)
             )
             Text(
                 text = "Settings",
                 fontSize = 20.sp,
                 fontFamily = FontFamily.Serif,
-                modifier = Modifier.wrapContentSize().padding(top = 10.dp)
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(top = 10.dp)
             )
         }
     }
