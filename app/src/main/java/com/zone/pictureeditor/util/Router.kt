@@ -24,13 +24,13 @@ fun Navigation() {
             MainPage(navController)
         }
         composable(Router.EditPage) {
-            Edit()
+            Edit(navController)
         }
         composable(Router.PDFPage) {
-            PDFPage()
+            PDFPage(navController)
         }
         composable(Router.SettingsPage) {
-            SettingsPage()
+            SettingsPage(navController)
         }
     }
 }

@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.zone.pictureeditor.R
+import com.zone.pictureeditor.ui.theme.AppColor
 import com.zone.pictureeditor.util.Router
 
 // 主页
@@ -56,14 +57,14 @@ fun AppTitle() {
         fontStyle = FontStyle.Italic,
         fontWeight = FontWeight.W800,
         fontFamily = FontFamily.Serif,
-        color = Color(22, 133, 169)
+        color = AppColor.MainColor
     )
     Text(
         text = "Editor",
         fontSize = 40.sp,
         fontStyle = FontStyle.Italic,
         fontFamily = FontFamily.Serif,
-        color = Color(22, 133, 169)
+        color = AppColor.MainColor
     )
 }
 
@@ -115,7 +116,7 @@ fun EditCard(navController: NavHostController) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_picture),
                 contentDescription = "Edit",
-                tint = Color(22, 133, 169),
+                tint = AppColor.MainColor,
                 modifier = Modifier
                     .padding(top = 30.dp)
                     .width(60.dp)
@@ -157,7 +158,7 @@ fun ConvertToPDFCard(navController: NavHostController) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_pdf2),
                 contentDescription = "Convert To PDF",
-                tint = Color(22, 133, 169),
+                tint = AppColor.MainColor,
                 modifier = Modifier
                     .padding(top = 30.dp)
                     .width(60.dp)
@@ -199,7 +200,7 @@ fun Drawing(navController: NavHostController) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_drawing),
                 contentDescription = "Draw",
-                tint = Color(22, 133, 169),
+                tint = AppColor.MainColor,
                 modifier = Modifier
                     .padding(top = 30.dp)
                     .width(60.dp)
@@ -240,7 +241,7 @@ fun SettingsCard(navController: NavHostController) {
             Icon(
                 imageVector = Icons.Outlined.Settings,
                 contentDescription = "Settings",
-                tint = Color(22, 133, 169),
+                tint = AppColor.MainColor,
                 modifier = Modifier
                     .padding(top = 30.dp)
                     .width(60.dp)
