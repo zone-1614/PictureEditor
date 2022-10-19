@@ -63,4 +63,6 @@ dependencies {
 
     def nav_version = "2.5.2"
     implementation "androidx.navigation:navigation-compose:$nav_version"
+
+//    implementation("io.coil-kt:coil-compose:2.2.2") // 用于加载图片
 }
