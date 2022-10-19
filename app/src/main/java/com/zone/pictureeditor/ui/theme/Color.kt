@@ -9,4 +9,5 @@ val Teal200 = Color(0xFF03DAC5)
 
 object AppColor {
     val MainColor = Color(22, 133, 169)
+    val Background = Color(233, 241, 246)
 }

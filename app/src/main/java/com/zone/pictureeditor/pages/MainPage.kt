@@ -37,7 +37,7 @@ fun MainPage(navController: NavHostController) {
     ) {
         Column(
             modifier = Modifier
-                .background(Color(233, 241, 246))
+                .background(AppColor.Background)
                 .fillMaxSize()
                 .padding(top = 50.dp),
             horizontalAlignment = Alignment.CenterHorizontally
