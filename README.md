@@ -1,8 +1,9 @@
 # Picture Editor
 ## 项目简介
-Picture Editor(图片编辑器), 主页如下:\\
-![](https://raw.githubusercontent.com/zone-1614/pic/main/img/Snipaste_2022-10-19_12-25-14.png)
-\\
+Picture Editor(图片编辑器), 主页如下:   
+
+![](https://raw.githubusercontent.com/zone-1614/pic/main/img/Snipaste_2022-10-19_12-25-14.png)   
+
 包括四个功能, Edit(编辑图片), Draw(创建一个空的画板, 画图, 这个功能暂定, 可以改), Convert To PDF(转化为 PDF), Settings(设置)
 ## 参考教程及采用的技术
 android项目只有两种选择: java 和 kotlin, 分别参考教程 《第一行代码》的第二版和第三版, ~~我建议用kotlin~~
