@@ -3,12 +3,14 @@ package com.zone.pictureeditor.pages
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyVerticalGrid
@@ -17,9 +19,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -30,7 +35,7 @@ import com.zone.pictureeditor.util.Router
 import com.zone.pictureeditor.util.toast
 import com.zone.pictureeditor.vm.PDFViewModel
 
-@OptIn(ExperimentalCoilApi::class)
+@OptIn(ExperimentalCoilApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun PDFPage(
     navController: NavHostController,
@@ -50,43 +55,50 @@ fun PDFPage(
             galleryLauncher.launch("image/*")
         }) }
     ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        LazyVerticalGrid(cells = GridCells.Fixed(1)) {
             items(vm.imageUriList.size) { idx ->
-                Card(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 40.dp, end = 40.dp, top = 20.dp)
-                    .height(200.dp)
-                    .pointerInput(Unit) {
-                        detectTapGestures(
-                            onLongPress = {
-                                // 长按删除
+                val showDeleteDialog = remember { mutableStateOf(false) }
+                Image(
+                    painter = rememberImagePainter(data = vm.imageUriList[idx]),
+                    contentDescription = "",
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier
+                        .padding(16.dp, 8.dp)
+                        .size(200.dp)
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onLongPress = {
+                                    // 长按弹出删除的dialog
+                                    showDeleteDialog.value = true
+//                                    vm.imageUriList.removeAt(idx)
+                                },
+                                onTap = {
+                                    // 点击放大
+                                    "onTap".toast()
+                                }
+                            )
+                        }
+                )
+                if (showDeleteDialog.value) {
+                    AlertDialog(
+                        onDismissRequest = { showDeleteDialog.value = false },
+                        title = { Text(text = "是否删除图片") },
+                        confirmButton = {
+                            Button(onClick = {
+                                showDeleteDialog.value = false
                                 vm.imageUriList.removeAt(idx)
+                            }) {
+                                Text(text = "确定")
                             }
-                        )
-                    }
-                ) {
-                    Image(
-                        painter = rememberImagePainter(data = vm.imageUriList[idx]),
-                        contentDescription = ""
+                        },
+                        dismissButton = {
+                            Button(onClick = { showDeleteDialog.value = false }) {
+                                Text(text = "取消")
+                            }
+                        }
                     )
                 }
             }
-//            if (vm.imageUriList.isNotEmpty()) {
-//                item {
-//                    Button(
-//                        onClick = {
-//                            // TODO: Convert To PDF
-//                            "convert".toast()
-//                        },
-//                        modifier = Modifier.padding(top = 20.dp, bottom = 20.dp)
-//                    ) {
-//                        Text(text = "Convert")
-//                    }
-//                }
-//            }
         }
     }
 }
