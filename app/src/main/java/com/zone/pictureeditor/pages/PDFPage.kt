@@ -66,7 +66,6 @@ fun PDFPage(
                                 onLongPress = {
                                     // 长按弹出删除的dialog
                                     showDeleteDialog.value = true
-//                                    vm.imageUriList.removeAt(idx)
                                 },
                                 onTap = {
                                     // 点击放大
@@ -116,9 +115,7 @@ fun PDFTopBar(navController: NavHostController, vm: PDFViewModel) = TopAppBar(
                 ActivityResultContracts.RequestMultiplePermissions()
             ) { permissionsMap ->
                 val allGranted = permissionsMap.values.reduce { acc, next -> acc && next }
-                if (allGranted) {
-//                    vm.convertToPDF()
-                } else {
+                if (!allGranted) {
                     "拒绝权限请求, 无法转化为PDF".toast()
                 }
             }
