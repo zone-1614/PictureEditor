@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 
-class AppSharedPreferences {
+object AppSharedPreferences {
     var data: SharedPreferences = PEApplication.context.getSharedPreferences("pref", Context.MODE_PRIVATE)
 
-    val default_PDF_path = ""
+    val default_path = PEApplication.context.getExternalFilesDir(null)!!.absolutePath + "/PictureEditor"
 
     fun savePDFPath(path: String) {
         data.edit { putString("pdfpath", path) }
@@ -16,7 +16,8 @@ class AppSharedPreferences {
     fun getPDFPath(): String {
         val str = data.getString("pdfpath", "")
         return if (str.isNullOrBlank()) {
-            default_PDF_path
+            savePDFPath(default_path) // 默认存储路径
+            default_path
         } else {
             str
         }

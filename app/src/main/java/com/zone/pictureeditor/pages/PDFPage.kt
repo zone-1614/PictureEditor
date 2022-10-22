@@ -1,18 +1,15 @@
 package com.zone.pictureeditor.pages
 
+import android.Manifest
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -21,16 +18,17 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.zone.pictureeditor.ui.theme.AppColor
+import com.zone.pictureeditor.util.PermissionUtils
 import com.zone.pictureeditor.util.Router
 import com.zone.pictureeditor.util.toast
 import com.zone.pictureeditor.vm.PDFViewModel
@@ -45,8 +43,6 @@ fun PDFPage(
         ActivityResultContracts.GetMultipleContents()) { uriList ->
         // 获得图片后添加到 viewModel 中
         uriList.forEach { vm.imageUriList.add(it) }
-        Log.d("PE", uriList.toString())
-        "选择成功".toast()
     }
     Scaffold(
         topBar = { PDFTopBar(navController, vm) },
@@ -116,9 +112,25 @@ fun PDFTopBar(navController: NavHostController, vm: PDFViewModel) = TopAppBar(
     backgroundColor = AppColor.Background,
     actions = {
         if (vm.imageUriList.isNotEmpty()) {
+            val launcher = rememberLauncherForActivityResult(
+                ActivityResultContracts.RequestMultiplePermissions()
+            ) { permissionsMap ->
+                val allGranted = permissionsMap.values.reduce { acc, next -> acc && next }
+                if (allGranted) {
+//                    vm.convertToPDF()
+                } else {
+                    "拒绝权限请求, 无法转化为PDF".toast()
+                }
+            }
             Button(onClick = {
-                // TODO: Convert To PDF
-                "convert".toast()
+                if (PermissionUtils.haveStoragePermission()) {
+                    vm.convertToPDF()
+                } else {
+                    launcher.launch(arrayOf(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ))
+                }
             }) {
                 Text(text = "Convert")
             }
