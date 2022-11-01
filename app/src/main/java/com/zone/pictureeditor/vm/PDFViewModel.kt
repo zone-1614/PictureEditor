@@ -23,7 +23,7 @@ class PDFViewModel : ViewModel() {
 
     fun convertToPDF() {
         val document = PdfDocument()
-        val pageInfo = PdfDocument.PageInfo.Builder(1080, 2480, imageUriList.size).create()
+        val pageInfo = PdfDocument.PageInfo.Builder(1080, 2000, imageUriList.size).create()
         val savePath = AppSharedPreferences.getPDFPath()
         val calendar = Calendar.getInstance()
         val filename = "/PE_${calendar.get(Calendar.YEAR)}_${calendar.get(Calendar.MONTH) + 1}" +
