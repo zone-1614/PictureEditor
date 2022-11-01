@@ -195,6 +195,7 @@ fun Drawing(navController: NavHostController) {
                 .clickable(interactionSource = remember { MutableInteractionSource() },
                     indication = LocalIndication.current) {
                     // TODO: click draw
+                    navController.navigate(Router.DrawPage)
                 }
         ) {
             Icon(
