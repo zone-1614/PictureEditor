@@ -1,6 +1,8 @@
 package com.zone.pictureeditor.pages
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.util.Log
 import android.view.MotionEvent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -10,15 +12,14 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -31,6 +32,7 @@ import com.zone.pictureeditor.util.Router
 import com.zone.pictureeditor.util.toast
 import com.zone.pictureeditor.vm.DrawViewModel
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun Draw(navController: NavHostController, vm: DrawViewModel = viewModel()) {
     Scaffold(
@@ -59,19 +61,22 @@ fun DrawTopBar(
         // 撤回按钮
         IconButton(onClick = {
             vm.cancel()
-        }, enabled = vm.linesOnCanvas.isNotEmpty()) {
+        }, enabled = !vm.linesOnCanvas.isEmpty()) {
             Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
         }
         // 反向撤回按钮
         IconButton(onClick = {
             vm.counterCancel()
-        }, enabled = vm.cancelLines.isNotEmpty()) {
+        }, enabled = !vm.cancelLines.isEmpty()) {
             Icon(imageVector = Icons.Default.ArrowForward, contentDescription = null)
         }
         val launcher = rememberLauncherForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissionsMap ->
-            val allGranted = permissionsMap.values.reduce { acc, next -> acc && next }
+            var allGranted = false
+            permissionsMap.values.forEach {
+                allGranted = it && allGranted
+            }
             if (!allGranted) {
                 "拒绝权限请求, 保存为图片失败".toast()
             }
@@ -80,7 +85,7 @@ fun DrawTopBar(
             modifier = Modifier.padding(start = 10.dp, end = 20.dp),
             onClick = {
             if (PermissionUtils.haveStoragePermission()) {
-                vm.save()
+//                vm.save()
             } else {
                 launcher.launch(arrayOf(
                     Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -93,11 +98,12 @@ fun DrawTopBar(
     }
 )
 
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PE_Canvas(vm: DrawViewModel) {
-    val action: MutableState<MotionEvent?> = remember { mutableStateOf(null) }
-    val path = Path()
+    val collectList = mutableListOf<Pair<Boolean, Pair<Float, Float>>>()
+    val action: MutableState<Pair<Boolean, Pair<Float, Float>>?> = mutableStateOf(null)
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
@@ -105,14 +111,13 @@ fun PE_Canvas(vm: DrawViewModel) {
             .pointerInteropFilter {
                 when (it.action) {
                     MotionEvent.ACTION_DOWN -> {
-                        action.value = it
-                        path.moveTo(it.x, it.y)
+                        action.value = Pair(true, Pair(it.x, it.y))
                     }
                     MotionEvent.ACTION_MOVE -> {
-                        action.value = it
-                        path.lineTo(it.x, it.y)
+                        action.value = Pair(false, Pair(it.x, it.y))
                     }
                     MotionEvent.ACTION_UP -> {
+                        val path = collectList.toPath()
                         vm.linesOnCanvas.add(path)
                     }
                 }
@@ -120,10 +125,15 @@ fun PE_Canvas(vm: DrawViewModel) {
             }
     ) {
         action.value?.let {
-            drawPath(path = path, color = vm.penColor.value, alpha = 1f, style = Stroke(10f))
+            collectList.add(it)
+            drawPath(
+                path = collectList.toPath(),
+                color = vm.penColor.value,
+                alpha = 1f,
+                style = Stroke(vm.penWidth))
         }
 //        vm.linesOnCanvas.forEach {
-//            drawPath(path = it, color = vm.penColor.value)
+//            drawPath(path = it, color = vm.penColor.value, alpha = 1f, style = Stroke(vm.penWidth))
 //        }
     }
 }
@@ -159,4 +169,16 @@ fun PE_Draw_BottomBar(vm: DrawViewModel) = BottomAppBar(
             modifier = Modifier.size(30.dp, 30.dp)
         )
     }
+}
+
+fun List<Pair<Boolean, Pair<Float, Float>>>.toPath(): Path {
+    val path = Path()
+    forEach {
+        if(it.first) {
+            path.moveTo(it.second.first, it.second.second)
+        } else {
+            path.lineTo(it.second.first, it.second.second)
+        }
+    }
+    return path
 }

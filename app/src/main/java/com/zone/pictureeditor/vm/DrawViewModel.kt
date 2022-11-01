@@ -20,9 +20,9 @@ class DrawViewModel: ViewModel() {
         cancelLines.removeAt(cancelLines.lastIndex)
     }
     // 点击保存
-    fun save() {
-        linesOnCanvas.forEach {
-            Log.d("PictureEditor", it.getBounds().toString())
+    fun save(l: MutableList<Pair<Boolean, Pair<Float, Float>>>) {
+        l.forEach {
+            Log.d("PictureEditor", "${it.second.first} ${it.second.second}")
         }
     }
 
@@ -31,6 +31,8 @@ class DrawViewModel: ViewModel() {
     var isPaint = mutableStateOf(true)
     // 画笔的颜色
     var penColor = mutableStateOf(Color.Black)
+    // 画笔的宽度
+    var penWidth = 10f
     // TODO: 画完的线都保存在这里
      var linesOnCanvas = mutableStateListOf<Path>()
     // TODO: 撤回的线保存在这里, 用于反撤回
