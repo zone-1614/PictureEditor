@@ -119,7 +119,9 @@ fun PDFTopBar(navController: NavHostController, vm: PDFViewModel) = TopAppBar(
                     "拒绝权限请求, 无法转化为PDF".toast()
                 }
             }
-            Button(onClick = {
+            Button(
+                modifier = Modifier.padding(end = 20.dp),
+                onClick = {
                 if (PermissionUtils.haveStoragePermission()) {
                     vm.convertToPDF()
                 } else {
