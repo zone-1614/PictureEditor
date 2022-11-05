@@ -112,6 +112,7 @@ fun DrawTopBar(
 fun PE_Canvas(vm: DrawViewModel) {
     // 画布相关
     val paths = remember { vm.paths }
+    val pathsUndone = remember { vm.pathsUndone }
     var motionEvent by remember { mutableStateOf(MotionEvent.Idle) }
     var currentPosition by remember { mutableStateOf(Offset.Unspecified) }
     var previousPosition by remember { mutableStateOf(Offset.Unspecified) }
@@ -207,7 +208,8 @@ fun PE_Canvas(vm: DrawViewModel) {
                         )
                     }
 
-                    //pathsUndone.clear()
+                    // 新画一条线, 就把 undo 的都删了
+                    pathsUndone.clear()
 
                     // 防止新的 path 从左上角开始
                     currentPosition = Offset.Unspecified
