@@ -39,8 +39,6 @@ class DrawViewModel: ViewModel() {
 
     // 是否打开 pen dialog
     var openPenDialog = mutableStateOf(false)
-    // 是否打开 eraser dialog
-    var openEraserDialog = mutableStateOf(false)
 
     // --------------------------------- Bottom Bar 相关 ---------------------------------
     // 点击选择画笔
@@ -49,7 +47,6 @@ class DrawViewModel: ViewModel() {
             pathProperties.value.eraseMode = false
             isPaint.value = true
         } else {
-            // TODO: 打开选择颜色的dialog
             openPenDialog.value = true
         }
     }
@@ -59,8 +56,7 @@ class DrawViewModel: ViewModel() {
             pathProperties.value.eraseMode = true
             isPaint.value = false
         } else {
-            // TODO: 打开清除的dialog
-            openEraserDialog.value = true
+            openPenDialog.value = true
         }
     }
 }

@@ -121,7 +121,6 @@ fun PE_Canvas(vm: DrawViewModel) {
 
     // dialog 相关
     var openPenDialog by remember { vm.openPenDialog }
-    var openEraserDialog by remember { vm.openEraserDialog }
 
     Column(
         modifier = Modifier
@@ -242,8 +241,7 @@ fun PE_Canvas(vm: DrawViewModel) {
                             color = Color.Transparent,
                             path = path,
                             style = Stroke(
-//                                width = currentPathProperty.strokeWidth,
-                                width = 20f,
+                                width = currentPathProperty.strokeWidth,
                                 cap = currentPathProperty.strokeCap,
                                 join = currentPathProperty.strokeJoin
                             ),
@@ -269,8 +267,7 @@ fun PE_Canvas(vm: DrawViewModel) {
                             color = Color.Transparent,
                             path = currentPath,
                             style = Stroke(
-//                                width = currentPathProperty.strokeWidth,
-                                width = 20f,
+                                width = currentPathProperty.strokeWidth,
                                 cap = currentPathProperty.strokeCap,
                                 join = currentPathProperty.strokeJoin
                             ),
@@ -284,9 +281,6 @@ fun PE_Canvas(vm: DrawViewModel) {
 
         if (openPenDialog) {
             PenDialog(vm)
-        }
-        if (openEraserDialog) {
-
         }
     }
 }

@@ -27,7 +27,7 @@ fun PenDialog(vm: DrawViewModel) {
     Dialog(
         onDismissRequest = { vm.openPenDialog.value = false },
     ) {
-        Card() {
+        Card {
             Column(modifier = Modifier.padding(20.dp)) {
                 Text("Stroke Width: ${String.format("%.0f", strokeWidth.value)} dp", fontSize = 25.sp)
                 Slider(
@@ -36,7 +36,7 @@ fun PenDialog(vm: DrawViewModel) {
                         strokeWidth.value = it
                         vm.pathProperties.value.strokeWidth = it
                     },
-                    valueRange = 3f..30f
+                    valueRange = 1f..100f
                 )
                 Text(
                     text = "Current Color",
