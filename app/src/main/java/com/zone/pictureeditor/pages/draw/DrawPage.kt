@@ -192,7 +192,6 @@ fun PE_Canvas(vm: DrawViewModel) {
                         currentPath.lineTo(currentPosition.x, currentPosition.y)
 
                         // 松开手指, 保存 path
-//                        paths[currentPath] = currentPathProperty
                         paths.add(Pair(currentPath, currentPathProperty))
 
                         // 保存完毕, currentPath 重新赋值
@@ -243,9 +242,9 @@ fun PE_Canvas(vm: DrawViewModel) {
                             color = Color.Transparent,
                             path = path,
                             style = Stroke(
-                                width = currentPathProperty.strokeWidth,
-                                cap = currentPathProperty.strokeCap,
-                                join = currentPathProperty.strokeJoin
+                                width = property.strokeWidth,
+                                cap = property.strokeCap,
+                                join = property.strokeJoin
                             ),
                             blendMode = BlendMode.Clear
                         )
@@ -265,6 +264,7 @@ fun PE_Canvas(vm: DrawViewModel) {
                             )
                         )
                     } else {
+
                         drawPath(
                             color = Color.Transparent,
                             path = currentPath,
