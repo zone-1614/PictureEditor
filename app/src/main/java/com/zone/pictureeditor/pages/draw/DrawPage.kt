@@ -30,6 +30,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.zone.pictureeditor.R
 import com.zone.pictureeditor.pages.draw.DrawMode
+import com.zone.pictureeditor.pages.draw.PenDialog
 import com.zone.pictureeditor.pages.draw.gesture.MotionEvent
 import com.zone.pictureeditor.pages.draw.gesture.dragMotionEvent
 import com.zone.pictureeditor.pages.draw.model.PathProperties
@@ -282,54 +283,10 @@ fun PE_Canvas(vm: DrawViewModel) {
         }
 
         if (openPenDialog) {
-            AlertDialog(
-                onDismissRequest = { openPenDialog = false },
-                title = { Text("pen dialog") },
-                text = {
-                    Text("Here is a text ")
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            openPenDialog = false
-                        }) {
-                        Text("This is the Confirm Button")
-                    }
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            openPenDialog = false
-                        }) {
-                        Text("This is the dismiss Button")
-                    }
-                }
-            )
+            PenDialog(vm)
         }
         if (openEraserDialog) {
-            AlertDialog(
-                onDismissRequest = { openEraserDialog = false },
-                title = { Text("pen dialog") },
-                text = {
-                    Text("Here is a text ")
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            openEraserDialog = false
-                        }) {
-                        Text("This is the Confirm Button")
-                    }
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            openEraserDialog = false
-                        }) {
-                        Text("This is the dismiss Button")
-                    }
-                }
-            )
+
         }
     }
 }
