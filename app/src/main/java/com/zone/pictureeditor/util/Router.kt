@@ -17,7 +17,10 @@ object Router {
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Router.MainPage) {
+    NavHost(
+        navController = navController,
+        startDestination = Router.MainPage
+    ) {
         composable(Router.MainPage) {
             MainPage(navController)
         }

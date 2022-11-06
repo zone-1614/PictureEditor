@@ -24,7 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.zone.pictureeditor.R
-import com.zone.pictureeditor.ui.theme.AppColor
+import com.zone.pictureeditor.ui.theme.Background
+import com.zone.pictureeditor.ui.theme.MainColor
 import com.zone.pictureeditor.util.Router
 
 // 主页
@@ -37,7 +38,7 @@ fun MainPage(navController: NavHostController) {
     ) {
         Column(
             modifier = Modifier
-                .background(AppColor.Background)
+                .background(Background)
                 .fillMaxSize()
                 .padding(top = 50.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -57,14 +58,14 @@ fun AppTitle() {
         fontStyle = FontStyle.Italic,
         fontWeight = FontWeight.W800,
         fontFamily = FontFamily.Serif,
-        color = AppColor.MainColor
+        color = MainColor
     )
     Text(
         text = "Editor",
         fontSize = 40.sp,
         fontStyle = FontStyle.Italic,
         fontFamily = FontFamily.Serif,
-        color = AppColor.MainColor
+        color = MainColor
     )
 }
 
@@ -116,7 +117,7 @@ fun EditCard(navController: NavHostController) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_picture),
                 contentDescription = "Edit",
-                tint = AppColor.MainColor,
+                tint = MainColor,
                 modifier = Modifier
                     .padding(top = 30.dp)
                     .width(60.dp)
@@ -158,7 +159,7 @@ fun ConvertToPDFCard(navController: NavHostController) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_pdf2),
                 contentDescription = "Convert To PDF",
-                tint = AppColor.MainColor,
+                tint = MainColor,
                 modifier = Modifier
                     .padding(top = 30.dp)
                     .width(60.dp)
@@ -201,7 +202,7 @@ fun Drawing(navController: NavHostController) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_drawing),
                 contentDescription = "Draw",
-                tint = AppColor.MainColor,
+                tint = MainColor,
                 modifier = Modifier
                     .padding(top = 30.dp)
                     .width(60.dp)
@@ -242,7 +243,7 @@ fun SettingsCard(navController: NavHostController) {
             Icon(
                 imageVector = Icons.Outlined.Settings,
                 contentDescription = "Settings",
-                tint = AppColor.MainColor,
+                tint = MainColor,
                 modifier = Modifier
                     .padding(top = 30.dp)
                     .width(60.dp)

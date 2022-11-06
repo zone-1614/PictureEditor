@@ -34,7 +34,7 @@ import com.zone.pictureeditor.pages.draw.PenDialog
 import com.zone.pictureeditor.pages.draw.gesture.MotionEvent
 import com.zone.pictureeditor.pages.draw.gesture.dragMotionEvent
 import com.zone.pictureeditor.pages.draw.model.PathProperties
-import com.zone.pictureeditor.ui.theme.AppColor
+import com.zone.pictureeditor.ui.theme.MainColor
 import com.zone.pictureeditor.util.PermissionUtils
 import com.zone.pictureeditor.util.Router
 import com.zone.pictureeditor.util.toast
@@ -300,7 +300,7 @@ fun PE_Draw_BottomBar(vm: DrawViewModel) = BottomAppBar(
         Icon(
             painter = painterResource(id = R.drawable.ic_pen),
             contentDescription = "Pen",
-            tint = if (vm.isPaint.value) { AppColor.MainColor } else { Color.Gray },
+            tint = if (vm.isPaint.value) { MainColor } else { Color.Gray },
             modifier = Modifier.size(45.dp, 45.dp)
         )
     }
@@ -314,7 +314,7 @@ fun PE_Draw_BottomBar(vm: DrawViewModel) = BottomAppBar(
         Icon(
             painter = painterResource(id = R.drawable.ic_eraser),
             contentDescription = "Eraser",
-            tint = if (!vm.isPaint.value) { AppColor.MainColor } else { Color.Gray },
+            tint = if (!vm.isPaint.value) { MainColor } else { Color.Gray },
             modifier = Modifier.size(30.dp, 30.dp)
         )
     }

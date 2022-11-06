@@ -7,10 +7,8 @@ val Purple500 = Color(0xFF6200EE)
 val Purple700 = Color(0xFF3700B3)
 val Teal200 = Color(0xFF03DAC5)
 
-object AppColor {
-    val MainColor = Color(22, 133, 169)
-    val Background = Color(233, 241, 246)
-}
+val MainColor = Color(22, 133, 169)
+val Background = Color(243, 244, 246)
 
 val backgroundColor = Color(0xffECEFF1)
 

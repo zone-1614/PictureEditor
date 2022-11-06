@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.zone.pictureeditor.ui.theme.AppColor
+import com.zone.pictureeditor.ui.theme.Background
 import com.zone.pictureeditor.util.Router
 import com.zone.pictureeditor.util.toast
 import com.zone.pictureeditor.vm.SettingsViewModel
@@ -24,7 +24,7 @@ fun SettingsPage(
 ) {
     Scaffold(
         topBar = { SettingsTopBar(navController = navController) },
-        backgroundColor = AppColor.Background
+        backgroundColor = Background
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -76,7 +76,7 @@ fun SettingsTopBar(navController: NavHostController) = TopAppBar(
             Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "ArrowBack")
         }
     },
-    backgroundColor = AppColor.Background
+    backgroundColor = Background
 )
 
 @Composable

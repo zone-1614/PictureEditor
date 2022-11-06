@@ -1,7 +1,6 @@
 package com.zone.pictureeditor.pages
 
 import android.Manifest
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -21,13 +20,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
-import com.zone.pictureeditor.ui.theme.AppColor
+import com.zone.pictureeditor.ui.theme.Background
+import com.zone.pictureeditor.ui.theme.MainColor
 import com.zone.pictureeditor.util.PermissionUtils
 import com.zone.pictureeditor.util.Router
 import com.zone.pictureeditor.util.toast
@@ -46,7 +45,7 @@ fun PDFPage(
     }
     Scaffold(
         topBar = { PDFTopBar(navController, vm) },
-        backgroundColor = AppColor.Background ,
+        backgroundColor = Background ,
         floatingActionButton = { PDFFloatingActionButton(onClick = {
             galleryLauncher.launch("image/*")
         }) }
@@ -108,7 +107,7 @@ fun PDFTopBar(navController: NavHostController, vm: PDFViewModel) = TopAppBar(
             Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "ArrowBack")
         }
     },
-    backgroundColor = AppColor.Background,
+    backgroundColor = Background,
     actions = {
         if (vm.imageUriList.isNotEmpty()) {
             val launcher = rememberLauncherForActivityResult(
@@ -142,7 +141,7 @@ fun PDFFloatingActionButton(onClick: () -> Unit) = FloatingActionButton(
     onClick = {
         onClick()
     },
-    backgroundColor = AppColor.MainColor
+    backgroundColor = MainColor
 ) {
     Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
 }
