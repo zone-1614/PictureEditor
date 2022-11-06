@@ -19,6 +19,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.consumeDownChange
@@ -39,22 +40,27 @@ import com.zone.pictureeditor.util.PermissionUtils
 import com.zone.pictureeditor.util.Router
 import com.zone.pictureeditor.util.toast
 import com.zone.pictureeditor.vm.DrawViewModel
+import dev.shreyaspatil.capturable.Capturable
+import dev.shreyaspatil.capturable.controller.CaptureController
+import dev.shreyaspatil.capturable.controller.rememberCaptureController
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun Draw(navController: NavHostController, vm: DrawViewModel = viewModel()) {
+    val captureController = rememberCaptureController()
     Scaffold(
-        topBar = { DrawTopBar(navController, vm) },
+        topBar = { DrawTopBar(navController, vm, captureController) },
         bottomBar = { PE_Draw_BottomBar(vm) }
     ) {
-        PE_Canvas(vm)
+        PE_Canvas(vm, captureController)
     }
 }
 
 @Composable
 fun DrawTopBar(
     navController: NavHostController,
-    vm: DrawViewModel
+    vm: DrawViewModel,
+    captureController: CaptureController
 ) = TopAppBar(
     title = { Text(text = "Draw") },
     navigationIcon = {
@@ -81,7 +87,7 @@ fun DrawTopBar(
         val launcher = rememberLauncherForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissionsMap ->
-            var allGranted = false
+            var allGranted = true
             permissionsMap.values.forEach {
                 allGranted = it && allGranted
             }
@@ -93,7 +99,7 @@ fun DrawTopBar(
             modifier = Modifier.padding(start = 10.dp, end = 20.dp),
             onClick = {
             if (PermissionUtils.haveStoragePermission()) {
-//                vm.save()
+                captureController.capture()
             } else {
                 launcher.launch(arrayOf(
                     Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -109,7 +115,10 @@ fun DrawTopBar(
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun PE_Canvas(vm: DrawViewModel) {
+fun PE_Canvas(
+    vm: DrawViewModel,
+    captureController: CaptureController
+) {
     // 画布相关
     val paths = remember { vm.paths }
     val pathsUndone = remember { vm.pathsUndone }
@@ -123,166 +132,182 @@ fun PE_Canvas(vm: DrawViewModel) {
     // dialog 相关
     var openPenDialog by remember { vm.openPenDialog }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(backgroundColor)
-    ) {
 
-        val drawModifier = Modifier
-            .fillMaxWidth()
-            .weight(1f)
-            .background(Color.White)
-            .dragMotionEvent(
-                onDragStart = { pointerInputChange ->
-                    motionEvent = MotionEvent.Down
-                    currentPosition = pointerInputChange.position
-                    pointerInputChange.consumeDownChange()
-
-                },
-                onDrag = { pointerInputChange ->
-                    motionEvent = MotionEvent.Move
-                    currentPosition = pointerInputChange.position
-
-                    if (drawMode == DrawMode.Touch) {
-                        val change = pointerInputChange.positionChange()
-                        paths.forEach { entry ->
-                            val path: Path = entry.first
-                            path.translate(change)
-                        }
-                        currentPath.translate(change)
-                    }
-                    pointerInputChange.consumePositionChange()
-                },
-                onDragEnd = { pointerInputChange ->
-                    motionEvent = MotionEvent.Up
-                    pointerInputChange.consumeDownChange()
-                }
-            )
-
-        Canvas(modifier = drawModifier) {
-
-            when (motionEvent) {
-
-                MotionEvent.Down -> {
-                    if (drawMode != DrawMode.Touch) {
-                        currentPath.moveTo(currentPosition.x, currentPosition.y)
-                    }
-                    // 按下手指, 记录当前位置
-                    previousPosition = currentPosition
-
-                }
-                MotionEvent.Move -> {
-
-                    if (drawMode != DrawMode.Touch) {
-                        // 两点之间画 bezier 曲线
-                        currentPath.quadraticBezierTo(
-                            previousPosition.x,
-                            previousPosition.y,
-                            (previousPosition.x + currentPosition.x) / 2,
-                            (previousPosition.y + currentPosition.y) / 2
-                        )
-                    }
-
-                    previousPosition = currentPosition
-                }
-
-                MotionEvent.Up -> {
-                    if (drawMode != DrawMode.Touch) {
-                        currentPath.lineTo(currentPosition.x, currentPosition.y)
-
-                        // 松开手指, 保存 path
-                        paths.add(Pair(currentPath, currentPathProperty))
-
-                        // 保存完毕, currentPath 重新赋值
-                        currentPath = Path()
-
-                        // property 也重新赋值
-                        currentPathProperty = PathProperties(
-                            strokeWidth = currentPathProperty.strokeWidth,
-                            color = currentPathProperty.color,
-                            strokeCap = currentPathProperty.strokeCap,
-                            strokeJoin = currentPathProperty.strokeJoin,
-                            eraseMode = currentPathProperty.eraseMode
-                        )
-                    }
-
-                    // 新画一条线, 就把 undo 的都删了
-                    pathsUndone.clear()
-
-                    // 防止新的 path 从左上角开始
-                    currentPosition = Offset.Unspecified
-                    previousPosition = currentPosition
-                    motionEvent = MotionEvent.Idle
-                }
-                else -> Unit
+    Capturable(
+        controller = captureController,
+        onCaptured = { bitmap, error ->
+            // This is captured bitmap of a content inside Capturable Composable.
+            if (bitmap != null) {
+                // Bitmap is captured successfully. Do something with it!
+                vm.save(bitmap)
             }
 
-            with(drawContext.canvas.nativeCanvas) {
-
-                val checkPoint = saveLayer(null, null)
-
-                paths.forEach {
-
-                    val path = it.first
-                    val property = it.second
-
-                    if (!property.eraseMode) {
-                        drawPath(
-                            color = property.color,
-                            path = path,
-                            style = Stroke(
-                                width = property.strokeWidth,
-                                cap = property.strokeCap,
-                                join = property.strokeJoin
-                            )
-                        )
-                    } else {
-                        drawPath(
-                            color = Color.Transparent,
-                            path = path,
-                            style = Stroke(
-                                width = property.strokeWidth,
-                                cap = property.strokeCap,
-                                join = property.strokeJoin
-                            ),
-                            blendMode = BlendMode.Clear
-                        )
-                    }
-                }
-
-                if (motionEvent != MotionEvent.Idle) {
-
-                    if (!currentPathProperty.eraseMode) {
-                        drawPath(
-                            color = currentPathProperty.color,
-                            path = currentPath,
-                            style = Stroke(
-                                width = currentPathProperty.strokeWidth,
-                                cap = currentPathProperty.strokeCap,
-                                join = currentPathProperty.strokeJoin
-                            )
-                        )
-                    } else {
-
-                        drawPath(
-                            color = Color.Transparent,
-                            path = currentPath,
-                            style = Stroke(
-                                width = currentPathProperty.strokeWidth,
-                                cap = currentPathProperty.strokeCap,
-                                join = currentPathProperty.strokeJoin
-                            ),
-                            blendMode = BlendMode.Clear
-                        )
-                    }
-                }
-                restoreToCount(checkPoint)
+            if (error != null) {
+                // Error occurred. Handle it!
             }
         }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(backgroundColor)
+        ) {
 
-        if (openPenDialog) {
-            PenDialog(vm)
+            val drawModifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .background(Color.White)
+                .dragMotionEvent(
+                    onDragStart = { pointerInputChange ->
+                        motionEvent = MotionEvent.Down
+                        currentPosition = pointerInputChange.position
+                        pointerInputChange.consumeDownChange()
+
+                    },
+                    onDrag = { pointerInputChange ->
+                        motionEvent = MotionEvent.Move
+                        currentPosition = pointerInputChange.position
+
+                        if (drawMode == DrawMode.Touch) {
+                            val change = pointerInputChange.positionChange()
+                            paths.forEach { entry ->
+                                val path: Path = entry.first
+                                path.translate(change)
+                            }
+                            currentPath.translate(change)
+                        }
+                        pointerInputChange.consumePositionChange()
+                    },
+                    onDragEnd = { pointerInputChange ->
+                        motionEvent = MotionEvent.Up
+                        pointerInputChange.consumeDownChange()
+                    }
+                )
+
+            Canvas(modifier = drawModifier) {
+
+                when (motionEvent) {
+
+                    MotionEvent.Down -> {
+                        if (drawMode != DrawMode.Touch) {
+                            currentPath.moveTo(currentPosition.x, currentPosition.y)
+                        }
+                        // 按下手指, 记录当前位置
+                        previousPosition = currentPosition
+
+                    }
+                    MotionEvent.Move -> {
+
+                        if (drawMode != DrawMode.Touch) {
+                            // 两点之间画 bezier 曲线
+                            currentPath.quadraticBezierTo(
+                                previousPosition.x,
+                                previousPosition.y,
+                                (previousPosition.x + currentPosition.x) / 2,
+                                (previousPosition.y + currentPosition.y) / 2
+                            )
+                        }
+
+                        previousPosition = currentPosition
+                    }
+
+                    MotionEvent.Up -> {
+                        if (drawMode != DrawMode.Touch) {
+                            currentPath.lineTo(currentPosition.x, currentPosition.y)
+
+                            // 松开手指, 保存 path
+                            paths.add(Pair(currentPath, currentPathProperty))
+
+                            // 保存完毕, currentPath 重新赋值
+                            currentPath = Path()
+
+                            // property 也重新赋值
+                            currentPathProperty = PathProperties(
+                                strokeWidth = currentPathProperty.strokeWidth,
+                                color = currentPathProperty.color,
+                                strokeCap = currentPathProperty.strokeCap,
+                                strokeJoin = currentPathProperty.strokeJoin,
+                                eraseMode = currentPathProperty.eraseMode
+                            )
+                        }
+
+                        // 新画一条线, 就把 undo 的都删了
+                        pathsUndone.clear()
+
+                        // 防止新的 path 从左上角开始
+                        currentPosition = Offset.Unspecified
+                        previousPosition = currentPosition
+                        motionEvent = MotionEvent.Idle
+                    }
+                    else -> Unit
+                }
+
+                with(drawContext.canvas.nativeCanvas) {
+
+                    val checkPoint = saveLayer(null, null)
+
+                    paths.forEach {
+
+                        val path = it.first
+                        val property = it.second
+
+                        if (!property.eraseMode) {
+                            drawPath(
+                                color = property.color,
+                                path = path,
+                                style = Stroke(
+                                    width = property.strokeWidth,
+                                    cap = property.strokeCap,
+                                    join = property.strokeJoin
+                                )
+                            )
+                        } else {
+                            drawPath(
+                                color = Color.Transparent,
+                                path = path,
+                                style = Stroke(
+                                    width = property.strokeWidth,
+                                    cap = property.strokeCap,
+                                    join = property.strokeJoin
+                                ),
+                                blendMode = BlendMode.Clear
+                            )
+                        }
+                    }
+
+                    if (motionEvent != MotionEvent.Idle) {
+
+                        if (!currentPathProperty.eraseMode) {
+                            drawPath(
+                                color = currentPathProperty.color,
+                                path = currentPath,
+                                style = Stroke(
+                                    width = currentPathProperty.strokeWidth,
+                                    cap = currentPathProperty.strokeCap,
+                                    join = currentPathProperty.strokeJoin
+                                )
+                            )
+                        } else {
+
+                            drawPath(
+                                color = Color.Transparent,
+                                path = currentPath,
+                                style = Stroke(
+                                    width = currentPathProperty.strokeWidth,
+                                    cap = currentPathProperty.strokeCap,
+                                    join = currentPathProperty.strokeJoin
+                                ),
+                                blendMode = BlendMode.Clear
+                            )
+                        }
+                    }
+                    restoreToCount(checkPoint)
+                }
+            }
+
+            if (openPenDialog) {
+                PenDialog(vm)
+            }
         }
     }
 }
