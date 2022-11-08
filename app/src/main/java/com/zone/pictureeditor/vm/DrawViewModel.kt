@@ -1,7 +1,5 @@
 package com.zone.pictureeditor.vm
 
-import android.content.Intent
-import android.graphics.Bitmap
 import android.provider.MediaStore
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -9,19 +7,10 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import coil.Coil
-import coil.request.ImageRequest
-import coil.request.SuccessResult
-import coil.size.Scale
 import com.zone.pictureeditor.pages.draw.DrawMode
 import com.zone.pictureeditor.pages.draw.model.PathProperties
-import com.zone.pictureeditor.util.AppSharedPreferences
 import com.zone.pictureeditor.util.PEApplication
 import com.zone.pictureeditor.util.toast
-import kotlinx.coroutines.launch
-import java.io.File
-import java.io.FileOutputStream
 import java.util.*
 
 class DrawViewModel: ViewModel() {
