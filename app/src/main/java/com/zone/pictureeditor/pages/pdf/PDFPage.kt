@@ -1,4 +1,4 @@
-package com.zone.pictureeditor.pages
+package com.zone.pictureeditor.pages.pdf
 
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult

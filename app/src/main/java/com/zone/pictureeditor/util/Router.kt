@@ -5,6 +5,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.zone.pictureeditor.pages.*
+import com.zone.pictureeditor.pages.edit.Edit
+import com.zone.pictureeditor.pages.pdf.PDFPage
+import com.zone.pictureeditor.pages.settings.SettingsPage
 
 object Router {
     const val MainPage = "MainPage"

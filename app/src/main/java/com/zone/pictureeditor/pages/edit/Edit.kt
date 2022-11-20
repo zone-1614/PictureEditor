@@ -1,4 +1,4 @@
-package com.zone.pictureeditor.pages
+package com.zone.pictureeditor.pages.edit
 
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
