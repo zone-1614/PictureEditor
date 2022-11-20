@@ -1,6 +1,7 @@
 package com.zone.pictureeditor.pages.draw
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Slider
 import androidx.compose.material.Text
@@ -79,6 +80,12 @@ fun PenDialog(vm: DrawViewModel) {
                         vm.pathProperties.value.color = Color(red.value / 255, green.value / 255, blue.value / 255)
                     }
                 )
+                Button(onClick = {
+                    vm.paths.clear()
+                    vm.pathsUndone.clear()
+                }) {
+                    Text("清空画布")
+                }
             }
         }
     }

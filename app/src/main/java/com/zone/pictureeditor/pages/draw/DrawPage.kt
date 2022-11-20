@@ -1,4 +1,4 @@
-package com.zone.pictureeditor.pages
+package com.zone.pictureeditor.pages.draw
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -29,8 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.zone.pictureeditor.R
-import com.zone.pictureeditor.pages.draw.DrawMode
-import com.zone.pictureeditor.pages.draw.PenDialog
 import com.zone.pictureeditor.pages.draw.gesture.MotionEvent
 import com.zone.pictureeditor.pages.draw.gesture.dragMotionEvent
 import com.zone.pictureeditor.pages.draw.model.PathProperties
