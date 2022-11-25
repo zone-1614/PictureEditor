@@ -1,6 +1,7 @@
 package com.zone.pictureeditor.pages
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.zone.pictureeditor.R
+import com.zone.pictureeditor.pages.edit.EditActivity
 import com.zone.pictureeditor.ui.theme.Background
 import com.zone.pictureeditor.ui.theme.MainColor
 import com.zone.pictureeditor.util.Router
@@ -81,7 +83,7 @@ fun AllFunctions(navController: NavHostController) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(Modifier.fillMaxWidth(0.5f)) {
-            EditCard(navController)
+            EditCard()
             ConvertToPDFCard(navController)
         }
         Column(Modifier.fillMaxWidth()) {
@@ -93,9 +95,8 @@ fun AllFunctions(navController: NavHostController) {
 
 
 // 编辑图片
-@SuppressLint("ResourceType")
 @Composable
-fun EditCard(navController: NavHostController) {
+fun EditCard() {
     Card(
         elevation = 6.dp,
         shape = RoundedCornerShape(10.dp),
@@ -104,6 +105,7 @@ fun EditCard(navController: NavHostController) {
             .fillMaxHeight(0.5f)
             .padding(10.dp)
     ) {
+        val currentContext = LocalContext.current
         Column(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -112,6 +114,9 @@ fun EditCard(navController: NavHostController) {
                     indication = LocalIndication.current) {
                     // Edit 点击事件
 //                    navController.navigate(Router.EditPage)
+                    // 因为 compose 无法实现图片编辑的功能, 使用 activity
+                    val intent = Intent(currentContext, EditActivity::class.java)
+                    currentContext.startActivity(intent)
                 }
         ) {
             Icon(
