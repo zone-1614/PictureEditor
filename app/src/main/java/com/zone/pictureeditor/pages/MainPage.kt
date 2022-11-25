@@ -111,7 +111,7 @@ fun EditCard(navController: NavHostController) {
                 .clickable(interactionSource = remember { MutableInteractionSource() },
                     indication = LocalIndication.current) {
                     // Edit 点击事件
-                    navController.navigate(Router.EditPage)
+//                    navController.navigate(Router.EditPage)
                 }
         ) {
             Icon(

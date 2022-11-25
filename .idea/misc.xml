@@ -4,8 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/code/android/PictureEditor/app/src/main/res/drawable/gimp_background.xml" value="0.1" />
+        <entry key="..\:/code/android/PictureEditor/app/src/main/res/drawable/ic_drawing.xml" value="0.18" />
         <entry key="..\:/code/android/PictureEditor/app/src/main/res/drawable/ic_eraser.xml" value="0.1" />
+        <entry key="..\:/code/android/PictureEditor/app/src/main/res/drawable/ic_pdf2.xml" value="0.1875" />
         <entry key="..\:/code/android/PictureEditor/app/src/main/res/drawable/ic_pen.xml" value="0.1" />
+        <entry key="..\:/code/android/PictureEditor/app/src/main/res/drawable/ic_picture.xml" value="0.1875" />
         <entry key="..\:/code/android/PictureEditor/app/src/main/res/mipmap-anydpi-v26/gimp.xml" value="0.1" />
         <entry key="..\:/code/android/PictureEditor/app/src/main/res/mipmap-anydpi-v26/gimp_round.xml" value="0.1" />
       </map>

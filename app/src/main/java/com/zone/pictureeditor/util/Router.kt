@@ -12,7 +12,7 @@ import com.zone.pictureeditor.pages.settings.SettingsPage
 
 object Router {
     const val MainPage = "MainPage"
-    const val EditPage = "EditPage"
+//    const val EditPage = "EditPage"
     const val PDFPage = "PDFPage"
     const val SettingsPage = "SettingsPage"
     const val DrawPage = "DrawPage"
@@ -28,9 +28,9 @@ fun Navigation() {
         composable(Router.MainPage) {
             MainPage(navController)
         }
-        composable(Router.EditPage) {
-            Edit(navController)
-        }
+//        composable(Router.EditPage) {
+//            Edit(navController)
+//        }
         composable(Router.PDFPage) {
             PDFPage(navController)
         }
