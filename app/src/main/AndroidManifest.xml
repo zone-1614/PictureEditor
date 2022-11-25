@@ -19,7 +19,8 @@
         android:theme="@style/Theme.PictureEditor">
         <activity
             android:name=".pages.edit.EditActivity"
-            android:exported="false">
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat">
             <intent-filter>
                 <action android:name="EditActivity"/>
                 <category android:name="android.intent.category.DEFAULT"/>
