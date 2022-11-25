@@ -2,7 +2,6 @@ package com.zone.pictureeditor.pages.edit
 
 import android.app.Activity
 import android.opengl.GLSurfaceView
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
