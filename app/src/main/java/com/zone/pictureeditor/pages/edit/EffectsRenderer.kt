@@ -6,6 +6,7 @@ import android.media.effect.Effect
 import android.media.effect.EffectContext
 import android.media.effect.EffectFactory
 import android.net.Uri
+import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.opengl.GLUtils
@@ -23,7 +24,7 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
     private var photoHeight: Int = 0
     private var effectContext: EffectContext? = null
     private var effect: Effect? = null
-    var bitmap: Bitmap? = null
+//    var bitmap: Bitmap? = null
     private var mFactor: Float = 0.0f
 
     private var mIndex: Int? = null
@@ -54,7 +55,8 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
      */
     private fun generateSquare(arr : FloatArray) {
         GLES20.glGenTextures(2, textures, 0)
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0])
+//        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0])
+        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, textures[0])
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR)
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR)
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
@@ -82,10 +84,10 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
     }
 
     override fun onDrawFrame(gl: GL10?) {
-        if(effectContext==null) {
+        if(effectContext == null) {
             effectContext = EffectContext.createWithCurrentGlContext()
         }
-        if(effect!=null){
+        if(effect != null){
             effect!!.release()
         }
         GLES20.glViewport(0,0,mViewWidth, mViewHeight)
@@ -169,11 +171,9 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
     private fun vignetteEffect(factor : Float = 0.5f) {
         val factory = effectContext!!.factory
         effect = factory.createEffect(EffectFactory.EFFECT_VIGNETTE)
-//        Log.v("CURFAC",factor.toString())
         effect!!.setParameter("scale", factor)
         effect!!.apply(textures[0], photoWidth, photoHeight, textures[1])
     }
-
 
     private fun autofixEffect(factor : Float = 0.5f) {
         val factory = effectContext!!.factory
@@ -181,8 +181,6 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
         effect!!.setParameter("scale", factor)
         effect!!.apply(textures[0], photoWidth, photoHeight, textures[1])
     }
-
-
 
     private fun brightnessEffect(factor : Float = 0.5f) {
         val factory = effectContext!!.factory
@@ -211,7 +209,6 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
         effect!!.apply(textures[0], photoWidth, photoHeight, textures[1])
     }
 
-
     private fun sharpenEffect(factor : Float = 0.5f) {
         val factory = effectContext!!.factory
         effect = factory.createEffect(EffectFactory.EFFECT_SHARPEN)
@@ -236,7 +233,6 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
     private fun tintEffect(factor : Float = 0.5f) {
         val factory = effectContext!!.factory
         effect = factory.createEffect(EffectFactory.EFFECT_FISHEYE)
-//        effect!!.setParameter("scale", factor)
         effect!!.apply(textures[0], photoWidth, photoHeight, textures[1])
     }
 
@@ -269,7 +265,6 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
     }
 
     private fun computeOutputVertices() : FloatArray {
-//        if (mPosVertices != null) {
         var photoWidth1 : Float = photoWidth * 1.0f
         var photoHeight1 : Float = photoHeight * 1.0f
         val imgAspectRatio = photoWidth1 / photoHeight1

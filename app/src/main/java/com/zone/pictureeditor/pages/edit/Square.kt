@@ -24,7 +24,7 @@ class Square(floatArray: FloatArray) {
     private val fragmentShaderCode =
             "precision mediump float;" +
             "uniform sampler2D uTexture;" +
-            "varying vc2 vTexPosition;" +
+            "varying vec2 vTexPosition;" +
             "void main() {" +
             "gl_FragColor = texture2D(uTexture, vTexPosition);" +
             "}"

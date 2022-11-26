@@ -1,7 +1,11 @@
 package com.zone.pictureeditor.pages
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,7 +32,9 @@ import com.zone.pictureeditor.R
 import com.zone.pictureeditor.pages.edit.EditActivity
 import com.zone.pictureeditor.ui.theme.Background
 import com.zone.pictureeditor.ui.theme.MainColor
+import com.zone.pictureeditor.util.PermissionUtils
 import com.zone.pictureeditor.util.Router
+import com.zone.pictureeditor.util.toast
 
 // 主页
 @Composable
@@ -106,17 +112,41 @@ fun EditCard() {
             .padding(10.dp)
     ) {
         val currentContext = LocalContext.current
+        val launcher = rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissionsMap ->
+            val allGranted = permissionsMap.values.reduce { acc, next -> acc && next }
+            if (!allGranted) {
+                "拒绝权限请求, 无法转化为PDF".toast()
+            }
+        }
+        val galleryLauncher = rememberLauncherForActivityResult(
+            ActivityResultContracts.GetContent()
+        ) { uri ->
+            uri?.let {
+                // 因为 compose 无法实现图片编辑的功能, 使用 activity
+                val intent = Intent(currentContext, EditActivity::class.java)
+                intent.putExtra("curPic", "$it")
+                currentContext.startActivity(intent)
+            }
+        }
         Column(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .clickable(interactionSource = remember { MutableInteractionSource() },
                     indication = LocalIndication.current) {
-                    // Edit 点击事件
-//                    navController.navigate(Router.EditPage)
-                    // 因为 compose 无法实现图片编辑的功能, 使用 activity
-                    val intent = Intent(currentContext, EditActivity::class.java)
-                    currentContext.startActivity(intent)
+                    // 跳转之前先到系统相册选择图片, 所以要获取权限
+                    if (PermissionUtils.haveStoragePermission()) {
+                        // 有权限, 进入系统相册选择图片, 获取其uri, 并跳转到 activity
+                        galleryLauncher.launch("image/*")
+                    } else { // 没有权限, 尝试获取权限
+                        launcher.launch(arrayOf(
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        ))
+                    }
+
                 }
         ) {
             Icon(

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
 import android.widget.SeekBar
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.zone.pictureeditor.R
@@ -22,30 +23,9 @@ class EditActivity : Activity() {
     lateinit var navigationView: BottomNavigationView
     lateinit var effectDoneBtn : ImageButton
     lateinit var seekBar : SeekBar
+    lateinit var effect_rotate: ImageButton
     private var curPos : Int = 0
     var mFactor : Float = 0.0f
-
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when (item.itemId) {
-            R.id.effect_filter -> {
-                navigationView.menu.getItem(1).isChecked = true
-//                effect_transform_bar.visibility = View.GONE
-                myRecyclerView.adapter = myAdapter
-                myAdapter.setEffectList(EffectNames.filters,0)
-            }
-            R.id.effect_enhance -> {
-                navigationView.menu.getItem(2).isChecked = true
-//                effect_transform_bar.visibility = View.GONE
-                myRecyclerView.adapter = myAdapter
-                myAdapter.setEffectList(EffectNames.enhance,1)
-            }
-            R.id.effect_transform -> {
-                navigationView.menu.getItem(0).isChecked = true
-
-            }
-        }
-        false
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,9 +37,51 @@ class EditActivity : Activity() {
         effectDoneBtn = findViewById(R.id.effect_done_btn)
         seekBar = findViewById(R.id.seek_bar_effect)
         seekBar.setOnSeekBarChangeListener(seekBarChangeListener)
-        effectDoneBtn.setOnClickListener{
+        effectDoneBtn.setOnClickListener {
             navigationView.visibility = View.VISIBLE
         }
+
+        curUri = intent.getStringExtra("curPic")!!
+        er = EffectsRenderer(this, curUri)
+        surfaceView.setRenderer(er)
+        surfaceView.renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
+
+        myRecyclerView = findViewById(R.id.effects_recycler_view)
+        myRecyclerView.addItemDecoration(SpacesItemDecoration(4))
+        myRecyclerView.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.HORIZONTAL, false)
+
+        myAdapter = EffectAdapter(this, curUri, navigationView)
+        myRecyclerView.adapter = myAdapter
+        myRecyclerView.recycledViewPool.setMaxRecycledViews(0, 0)
+//        myAdapter.setEffectList(EffectNames.filters, 0)
+
+        effect_rotate = findViewById(R.id.effect_rotate)
+        effect_rotate.setOnClickListener {
+            onEffectClicked(20)
+            navigationView.visibility = View.GONE
+        }
+    }
+
+    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        val effect_transform_bar: View = findViewById(R.id.effect_transform_bar)
+        when (item.itemId) {
+            R.id.effect_filter -> {
+                navigationView.menu.getItem(1).isChecked = true
+                effect_transform_bar.visibility = View.GONE
+                myRecyclerView.adapter = myAdapter
+                myAdapter.setEffectList(EffectNames.filters, 0)
+            }
+            R.id.effect_enhance -> {
+                navigationView.menu.getItem(2).isChecked = true
+                effect_transform_bar.visibility = View.GONE
+                myRecyclerView.adapter = myAdapter
+                myAdapter.setEffectList(EffectNames.enhance, 1)
+            }
+            R.id.effect_transform -> {
+                navigationView.menu.getItem(0).isChecked = true
+            }
+        }
+        false
     }
 
     var seekBarChangeListener: SeekBar.OnSeekBarChangeListener = object : SeekBar.OnSeekBarChangeListener {
@@ -67,7 +89,6 @@ class EditActivity : Activity() {
         override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
             // updated continuously as the user slides the thumb
             er.setCurEffect(curPos)
-//            Log.v("EffectPos",curPos.toString())
             mFactor = progress / (100.0f)
             er.setFactor(mFactor)
             surfaceView.requestRender()
@@ -90,6 +111,7 @@ class EditActivity : Activity() {
 
     fun onEffectClicked(pos: Int) {
         curPos = pos
-
+        er.setCurEffect(pos)
+        surfaceView.requestRender()
     }
 }

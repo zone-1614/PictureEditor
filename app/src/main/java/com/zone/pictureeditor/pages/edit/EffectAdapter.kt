@@ -7,12 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.zone.pictureeditor.R
 
 // 滤镜的adapter
 class EffectAdapter(
     private val myContext: Context,
-    private val curUri: String // current uri
+    private val curUri: String, // current uri
+    private val navigationView: BottomNavigationView
 ): RecyclerView.Adapter<EffectAdapter.EffectsViewHolder>() {
     inner class EffectsViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         var surfaceView = itemView.findViewById(R.id.img_effect_preview) as GLSurfaceView
@@ -34,6 +36,8 @@ class EffectAdapter(
     }
 
     override fun onBindViewHolder(holder: EffectsViewHolder, position: Int) {
+        holder.setIsRecyclable(false)
+
         val curEffect = myEffectList!![position]
         holder.effectName.text = curEffect
         holder.surfaceView.setEGLContextClientVersion(2)
@@ -46,8 +50,7 @@ class EffectAdapter(
         holder.surfaceView.requestRender()
         holder.itemView.setOnClickListener {
             (myContext as EditActivity).onEffectClicked(position+(type*10))
-//         TODO 保留这一句?
-        //          navigationView.visibility = View.GONE
+            navigationView.visibility = View.GONE
         }
     }
 
