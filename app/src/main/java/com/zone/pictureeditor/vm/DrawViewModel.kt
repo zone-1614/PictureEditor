@@ -32,7 +32,7 @@ class DrawViewModel: ViewModel() {
                 "_${calendar.get(Calendar.DAY_OF_MONTH)}_${calendar.get(Calendar.HOUR_OF_DAY)}" +
                 "_${calendar.get(Calendar.MINUTE)}_${calendar.get(Calendar.SECOND)}.png"
         val abitmap = bitmap.asAndroidBitmap()
-        MediaStore.Images.Media.insertImage(PEApplication.context.contentResolver, abitmap, filename, "pe")
+        MediaStore.Images.Media.insertImage(PEApplication.context.contentResolver, abitmap, filename, "image from picture editor")
         // 保存完毕, 发送通知  TODO: 改成用 状态栏通知
         "保存成功".toast()
     }

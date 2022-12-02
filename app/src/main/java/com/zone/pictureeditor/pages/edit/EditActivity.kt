@@ -1,17 +1,30 @@
 package com.zone.pictureeditor.pages.edit
 
 import android.app.Activity
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.media.MediaMetadataRetriever
 import android.opengl.GLSurfaceView
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.provider.MediaStore
+import android.view.PixelCopy
 import android.view.View
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.SeekBar
+import androidx.core.graphics.createBitmap
+import androidx.core.view.drawToBitmap
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
+import com.zone.pictureeditor.MainActivity
 import com.zone.pictureeditor.R
 import com.zone.pictureeditor.util.toast
+import java.util.*
 
 class EditActivity : Activity() {
 
@@ -31,6 +44,9 @@ class EditActivity : Activity() {
     var mFactor : Float = 0.0f
 
     lateinit var effect_transform_bar: View
+
+    lateinit var back_button: ImageButton
+    lateinit var save_button: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +87,21 @@ class EditActivity : Activity() {
         effect_crop.setOnClickListener {
             "click crop".toast()
         }
+
+        back_button = findViewById(R.id.back_button)
+        back_button.setOnClickListener {
+            finish()
+        }
+
+        save_button = findViewById(R.id.save_button)
+        save_button.setOnClickListener {
+            val bitmap = Bitmap.createBitmap(surfaceView.width, surfaceView.height, Bitmap.Config.ARGB_8888)
+            val listener = PixelCopy.OnPixelCopyFinishedListener { copyResult: Int ->
+                saveBitmap(bitmap)
+            }
+            PixelCopy.request(surfaceView, bitmap, listener, Handler(Looper.getMainLooper()))
+        }
+
     }
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -130,5 +161,13 @@ class EditActivity : Activity() {
         curPos = pos
         er.setCurEffect(pos)
         surfaceView.requestRender()
+    }
+
+    private fun saveBitmap(bitmap: Bitmap) {
+        val calendar = Calendar.getInstance()
+        val filename = "/PE_${calendar.get(Calendar.YEAR)}_${calendar.get(Calendar.MONTH) + 1}" +
+                "_${calendar.get(Calendar.DAY_OF_MONTH)}_${calendar.get(Calendar.HOUR_OF_DAY)}" +
+                "_${calendar.get(Calendar.MINUTE)}_${calendar.get(Calendar.SECOND)}.png"
+        MediaStore.Images.Media.insertImage(contentResolver, bitmap, filename, "image from picture editor")
     }
 }
