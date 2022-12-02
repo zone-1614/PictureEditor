@@ -38,11 +38,15 @@ fun SettingsPage(
                     .padding(start = 40.dp, end = 40.dp, top = 40.dp, bottom = 20.dp)
             ) {
                 Column {
-                    SettingItem(text = "This is Settings Page")
+                    SettingItem(text = "语言设置")
                     Divider()
                     SettingItem(text = "改变PDF存储路径")
                     Divider()
-                    SettingItem(text = "通知")
+                    SettingItem(text = "通知设置")
+                    Divider()
+                    SettingItem(text = "主题颜色设置")
+                    Divider()
+                    SettingItem(text = "存储空间计算")
                 }
             }
             Card(
@@ -53,13 +57,15 @@ fun SettingsPage(
                     .padding(start = 40.dp, end = 40.dp, top = 20.dp, bottom = 20.dp)
             ) {
                 Column {
-                    SettingItem(text = "隐私")
+                    SettingItem(text = "隐私", onClick = { navController.navigate(Router.PrivacyPage) })
                     Divider()
-                    SettingItem(text = "服务条款")
+                    SettingItem(text = "服务条款", onClick = { navController.navigate(Router.ServicePage) })
                     Divider()
-                    SettingItem(text = "反馈")
+                    SettingItem(text = "反馈", onClick = { navController.navigate(Router.FeedbackPage) })
                     Divider()
-                    SettingItem(text = "帮助")
+                    SettingItem(text = "帮助", onClick = { navController.navigate(Router.HelpPage) })
+                    Divider()
+                    SettingItem(text = "关于", onClick = { navController.navigate(Router.AboutPage) })
                 }
             }
         }
