@@ -6,12 +6,10 @@ import android.media.effect.Effect
 import android.media.effect.EffectContext
 import android.media.effect.EffectFactory
 import android.net.Uri
-import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.opengl.GLUtils
 import android.provider.MediaStore
-import android.util.Log
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -25,7 +23,6 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
     private var photoHeight: Int = 0
     private var effectContext: EffectContext? = null
     private var effect: Effect? = null
-//    var bitmap: Bitmap? = null
     private var mFactor: Float = 0.0f
 
     private var mIndex: Int? = null
@@ -42,7 +39,6 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
         photo = MediaStore.Images.Media.getBitmap(context.contentResolver, Uri.parse(curUri))
         photoWidth = photo!!.width
         photoHeight = photo!!.height
-//        Log.e("ZONE_DEBUG", "constructor of renderer")
         mIndex = 0
     }
 
@@ -58,25 +54,21 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
     private fun generateSquare(arr : FloatArray) {
         GLES20.glGenTextures(2, textures, 0)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0])
-//        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, textures[0])
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR)
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR)
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, photo, 0)
         square = Square(arr)
-        Log.e("ZONE_DEBUG", "generateSquare")
     }
 
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
-        Log.e("ZONE_DEBUG", "onSurfaceCreated")
-        var coords = computeOutputVertices()
+        val coords = computeOutputVertices()
         generateSquare(coords)
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
-        Log.e("ZONE_DEBUG", "onSurfaceChanged")
         mViewHeight = height
         mViewWidth = width
         photo = getResizedBitmap(photo!!, mViewWidth, mViewHeight)
@@ -84,7 +76,7 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
         photoHeight = photo!!.height
         GLES20.glViewport(0, 0, width, height)
         GLES20.glClearColor(0f, 0f, 0f, 1f)
-        var coords = computeOutputVertices()
+        val coords = computeOutputVertices()
         generateSquare(coords)
     }
 
@@ -116,9 +108,9 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
             15 -> sharpenEffect(mFactor)
             16 -> straightenEffect(mFactor)
             17 -> temperatureEffect(mFactor)
-            18 -> tintEffect(mFactor)
+            18 -> tintEffect()
 
-            20 -> rotateEffect(mFactor)
+            20 -> rotateEffect()
 
             else -> autofixEffect(mFactor)
         }
@@ -238,13 +230,13 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
         effect!!.apply(textures[0], photoWidth, photoHeight, textures[1])
     }
 
-    private fun tintEffect(factor : Float = 0.5f) {
+    private fun tintEffect() {
         val factory = effectContext!!.factory
         effect = factory.createEffect(EffectFactory.EFFECT_FISHEYE)
         effect!!.apply(textures[0], photoWidth, photoHeight, textures[1])
     }
 
-    private fun rotateEffect(factor : Float = 0.5f) {
+    private fun rotateEffect() {
         val factory = effectContext!!.factory
         effect = factory.createEffect(EffectFactory.EFFECT_ROTATE)
 
@@ -252,20 +244,19 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
         angle %= 360
 
         GLES20.glViewport(0,0,mViewWidth, mViewHeight)
-        GLES20.glClearColor(0f,0f,0f,1f)
+        GLES20.glClearColor(0f, 0f, 0f, 1f)
 
         if(angle==0 || angle==180) {
-            photo = getResizedBitmap(photo!!,mViewWidth,mViewHeight)
+            photo = getResizedBitmap(photo!!, mViewWidth, mViewHeight)
             photoWidth = photo!!.width
             photoHeight = photo!!.height
-        }
-        else {
-            photo = getResizedBitmap(photo!!,mViewWidth,mViewWidth)
+        } else {
+            photo = getResizedBitmap(photo!!, mViewWidth, mViewWidth)
             photoWidth = photo!!.width
             photoHeight = photo!!.width
         }
 
-        var coords = computeOutputVertices()
+        val coords = computeOutputVertices()
         generateSquare(coords)
 
         effect!!.setParameter("angle", angle)
@@ -273,12 +264,11 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
     }
 
     private fun computeOutputVertices() : FloatArray {
-        Log.e("ZONE_DEBUG", "computeOutputVertices")
-        var photoWidth1 : Float = photoWidth * 1.0f
-        var photoHeight1 : Float = photoHeight * 1.0f
+        val photoWidth1 : Float = photoWidth * 1.0f
+        val photoHeight1 : Float = photoHeight * 1.0f
         val imgAspectRatio = photoWidth1 / photoHeight1
-        var mViewWidth1 : Float = mViewWidth * 1.0f
-        var mViewHeight1 : Float = mViewHeight * 1.0f
+        val mViewWidth1 : Float = mViewWidth * 1.0f
+        val mViewHeight1 : Float = mViewHeight * 1.0f
         val viewAspectRatio = mViewWidth1/ mViewHeight1
         val relativeAspectRatio = viewAspectRatio / imgAspectRatio
         var x0: Float
@@ -304,11 +294,9 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
             y1 = relativeAspectRatio + 0.5f
         }
         return floatArrayOf(x0, y0, x1, y0, x0, y1, x1, y1)
-//        return floatArrayOf(0f, 0f, 1f, 0f, 0f, 1f, 1f, 1f)
     }
 
-    fun getResizedBitmap(image: Bitmap, bitmapWidth: Int, bitmapHeight: Int): Bitmap {
-        Log.e("ZONE_DEBUG", "getResizedBitmap")
+    private fun getResizedBitmap(image: Bitmap, bitmapWidth: Int, bitmapHeight: Int): Bitmap {
         return Bitmap.createScaledBitmap(image, bitmapWidth, bitmapHeight, true)
     }
 }

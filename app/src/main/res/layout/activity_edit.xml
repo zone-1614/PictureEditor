@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="14"
+        android:layout_margin="20dp"
         android:id="@+id/photo_for_edit"
         android:layout_gravity="center"/>
     <LinearLayout
@@ -35,6 +36,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
                     <ImageButton
+                        android:padding="8dp"
                         android:layout_width="match_parent"
                         android:background="@android:color/white"
                         android:layout_height="0dp"
@@ -45,8 +47,7 @@
                         app:tint="@color/my_blue"/>
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_height="25dp"
                         android:textColor="@color/black"
                         android:background="@android:color/white"
                         android:text="Crop"
@@ -59,6 +60,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
                     <ImageButton
+                        android:padding="12dp"
                         android:layout_width="match_parent"
                         android:background="@android:color/white"
                         android:layout_height="0dp"
@@ -68,9 +70,9 @@
                         android:src="@drawable/ic_rotate"
                         app:tint="@color/my_blue"/>
                     <TextView
+                        android:layout_gravity="bottom"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_height="25dp"
                         android:textColor="@color/black"
                         android:background="@android:color/white"
                         android:text="Rotate"
@@ -110,6 +112,7 @@
             </LinearLayout>
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/navigationEffect"
+                app:labelVisibilityMode="labeled"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_constraintBottom_toBottomOf="parent"

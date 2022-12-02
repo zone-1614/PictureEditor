@@ -5,19 +5,19 @@
     <item
         android:id="@+id/effect_transform"
         android:icon="@drawable/ic_crop"
-        android:title="Transform"
-        app:showAsAction="always|withText"/>
+        android:title="@string/transform"
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/effect_filter"
         android:icon="@drawable/ic_filter"
-        android:title="Filter"
-        app:showAsAction="always|withText"/>
+        android:title="@string/filter"
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/effect_enhance"
         android:icon="@drawable/ic_enhance"
-        android:title="Enhance"
-        app:showAsAction="always|withText" />
+        android:title="@string/enhance"
+        app:showAsAction="ifRoom" />
 
 </menu>

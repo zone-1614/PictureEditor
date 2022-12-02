@@ -13,7 +13,7 @@
         android:id="@+id/effect_name"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:textSize="10sp"
+        android:textSize="11sp"
         android:gravity="center"
         android:layout_weight="2"/>
 </LinearLayout>

@@ -9,7 +9,9 @@ import android.widget.SeekBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
 import com.zone.pictureeditor.R
+import com.zone.pictureeditor.util.toast
 
 class EditActivity : Activity() {
 
@@ -24,6 +26,7 @@ class EditActivity : Activity() {
     lateinit var effectDoneBtn : ImageButton
     lateinit var seekBar : SeekBar
     lateinit var effect_rotate: ImageButton
+    lateinit var effect_crop: ImageButton
     private var curPos : Int = 0
     var mFactor : Float = 0.0f
 
@@ -36,6 +39,7 @@ class EditActivity : Activity() {
         surfaceView.setEGLContextClientVersion(2)
         navigationView = findViewById(R.id.navigationEffect)
         navigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+//        navigationView.labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_LABELED
         effectDoneBtn = findViewById(R.id.effect_done_btn)
         seekBar = findViewById(R.id.seek_bar_effect)
         seekBar.setOnSeekBarChangeListener(seekBarChangeListener)
@@ -61,25 +65,35 @@ class EditActivity : Activity() {
         effect_rotate = findViewById(R.id.effect_rotate)
         effect_rotate.setOnClickListener {
             onEffectClicked(20)
-            navigationView.visibility = View.GONE
+        }
+
+        effect_crop = findViewById(R.id.effect_crop)
+        effect_crop.setOnClickListener {
+            "click crop".toast()
         }
     }
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.effect_filter -> {
+                if (navigationView.menu.getItem(1).isChecked)
+                    return@OnNavigationItemSelectedListener false
                 navigationView.menu.getItem(1).isChecked = true
                 effect_transform_bar.visibility = View.GONE
                 myRecyclerView.adapter = myAdapter
                 myAdapter.setEffectList(EffectNames.filters, 0)
             }
             R.id.effect_enhance -> {
+                if (navigationView.menu.getItem(2).isChecked)
+                    return@OnNavigationItemSelectedListener false
                 navigationView.menu.getItem(2).isChecked = true
                 effect_transform_bar.visibility = View.GONE
                 myRecyclerView.adapter = myAdapter
                 myAdapter.setEffectList(EffectNames.enhance, 1)
             }
             R.id.effect_transform -> {
+                if (navigationView.menu.getItem(0).isChecked)
+                    return@OnNavigationItemSelectedListener false
                 navigationView.menu.getItem(0).isChecked = true
                 effect_transform_bar.visibility = View.VISIBLE
             }
