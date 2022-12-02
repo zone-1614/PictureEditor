@@ -17,7 +17,7 @@ class Square(floatArray: FloatArray) {
             "attribute vec2 aTexPosition;" +
             "varying vec2 vTexPosition;" +
             "void main() {" +
-            "   gl_position = aPosition;" +
+            "   gl_Position = aPosition;" +
             "   vTexPosition = aTexPosition;" +
             "}"
 
@@ -26,6 +26,7 @@ class Square(floatArray: FloatArray) {
             "uniform sampler2D uTexture;" +
             "varying vec2 vTexPosition;" +
             "void main() {" +
+//            "   gl_FragColor = vec4(0.5, 0.3, 0.2, 1.0);" +
             "   gl_FragColor = texture2D(uTexture, vTexPosition);" +
             "}"
 

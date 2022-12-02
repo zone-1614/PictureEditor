@@ -38,8 +38,8 @@ class EditActivity : Activity() {
         navigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         effectDoneBtn = findViewById(R.id.effect_done_btn)
         seekBar = findViewById(R.id.seek_bar_effect)
-        effect_transform_bar = findViewById(R.id.effect_transform_bar)
         seekBar.setOnSeekBarChangeListener(seekBarChangeListener)
+        effect_transform_bar = findViewById(R.id.effect_transform_bar)
         effectDoneBtn.setOnClickListener {
             navigationView.visibility = View.VISIBLE
         }

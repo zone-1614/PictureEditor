@@ -11,6 +11,7 @@ import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.opengl.GLUtils
 import android.provider.MediaStore
+import android.util.Log
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -41,6 +42,7 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
         photo = MediaStore.Images.Media.getBitmap(context.contentResolver, Uri.parse(curUri))
         photoWidth = photo!!.width
         photoHeight = photo!!.height
+//        Log.e("ZONE_DEBUG", "constructor of renderer")
         mIndex = 0
     }
 
@@ -63,36 +65,39 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, photo, 0)
         square = Square(arr)
+        Log.e("ZONE_DEBUG", "generateSquare")
     }
 
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
+        Log.e("ZONE_DEBUG", "onSurfaceCreated")
         var coords = computeOutputVertices()
         generateSquare(coords)
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
+        Log.e("ZONE_DEBUG", "onSurfaceChanged")
         mViewHeight = height
         mViewWidth = width
-        photo = getResizedBitmap(photo!!,mViewWidth,mViewHeight)
+        photo = getResizedBitmap(photo!!, mViewWidth, mViewHeight)
         photoWidth = photo!!.width
         photoHeight = photo!!.height
-        GLES20.glViewport(0,0,width, height)
-        GLES20.glClearColor(0f,0f,0f,1f)
+        GLES20.glViewport(0, 0, width, height)
+        GLES20.glClearColor(0f, 0f, 0f, 1f)
         var coords = computeOutputVertices()
         generateSquare(coords)
     }
 
     override fun onDrawFrame(gl: GL10?) {
-        if(effectContext == null) {
+        if (effectContext == null) {
             effectContext = EffectContext.createWithCurrentGlContext()
         }
-        if(effect != null){
+        if (effect != null) {
             effect!!.release()
         }
-        GLES20.glViewport(0,0,mViewWidth, mViewHeight)
-        GLES20.glClearColor(0f,0f,0f,1f)
-        when(mIndex) {
+        GLES20.glViewport(0, 0, mViewWidth, mViewHeight)
+        GLES20.glClearColor(0f, 0f, 0f, 1f)
+        when (mIndex) {
             3 -> documentaryEffect()
             1 -> blackAndWhiteEffect(mFactor)
             2 -> duotoneEffect()
@@ -102,6 +107,7 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
             6 -> posterizeEffect()
             7 -> sepiaEffect()
             8 -> vignetteEffect(mFactor)
+
             10 -> autofixEffect(mFactor)
             11 -> brightnessEffect(mFactor)
             12 -> contrastEffect(mFactor)
@@ -111,7 +117,9 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
             16 -> straightenEffect(mFactor)
             17 -> temperatureEffect(mFactor)
             18 -> tintEffect(mFactor)
+
             20 -> rotateEffect(mFactor)
+
             else -> autofixEffect(mFactor)
         }
         square!!.draw(textures[1])
@@ -265,6 +273,7 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
     }
 
     private fun computeOutputVertices() : FloatArray {
+        Log.e("ZONE_DEBUG", "computeOutputVertices")
         var photoWidth1 : Float = photoWidth * 1.0f
         var photoHeight1 : Float = photoHeight * 1.0f
         val imgAspectRatio = photoWidth1 / photoHeight1
@@ -288,16 +297,18 @@ class EffectsRenderer(): GLSurfaceView.Renderer {
             y1 = relativeAspectRatio
         }
 
-        if(photoHeight<mViewHeight) {
+        if(photoHeight < mViewHeight) {
             x0 = -1.0f
-            y0 = -relativeAspectRatio+0.5f
+            y0 = -relativeAspectRatio + 0.5f
             x1 = 1.0f
-            y1 = relativeAspectRatio+0.5f
+            y1 = relativeAspectRatio + 0.5f
         }
         return floatArrayOf(x0, y0, x1, y0, x0, y1, x1, y1)
+//        return floatArrayOf(0f, 0f, 1f, 0f, 0f, 1f, 1f, 1f)
     }
 
     fun getResizedBitmap(image: Bitmap, bitmapWidth: Int, bitmapHeight: Int): Bitmap {
+        Log.e("ZONE_DEBUG", "getResizedBitmap")
         return Bitmap.createScaledBitmap(image, bitmapWidth, bitmapHeight, true)
     }
 }
