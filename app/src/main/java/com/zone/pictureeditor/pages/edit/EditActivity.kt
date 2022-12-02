@@ -27,6 +27,8 @@ class EditActivity : Activity() {
     private var curPos : Int = 0
     var mFactor : Float = 0.0f
 
+    lateinit var effect_transform_bar: View
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
@@ -36,6 +38,7 @@ class EditActivity : Activity() {
         navigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         effectDoneBtn = findViewById(R.id.effect_done_btn)
         seekBar = findViewById(R.id.seek_bar_effect)
+        effect_transform_bar = findViewById(R.id.effect_transform_bar)
         seekBar.setOnSeekBarChangeListener(seekBarChangeListener)
         effectDoneBtn.setOnClickListener {
             navigationView.visibility = View.VISIBLE
@@ -63,7 +66,6 @@ class EditActivity : Activity() {
     }
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        val effect_transform_bar: View = findViewById(R.id.effect_transform_bar)
         when (item.itemId) {
             R.id.effect_filter -> {
                 navigationView.menu.getItem(1).isChecked = true
@@ -79,6 +81,7 @@ class EditActivity : Activity() {
             }
             R.id.effect_transform -> {
                 navigationView.menu.getItem(0).isChecked = true
+                effect_transform_bar.visibility = View.VISIBLE
             }
         }
         false

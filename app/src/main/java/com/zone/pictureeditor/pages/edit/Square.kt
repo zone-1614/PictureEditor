@@ -17,8 +17,8 @@ class Square(floatArray: FloatArray) {
             "attribute vec2 aTexPosition;" +
             "varying vec2 vTexPosition;" +
             "void main() {" +
-            "gl_position = aPosition;" +
-            "vTexPosition = aTexPosition;" +
+            "   gl_position = aPosition;" +
+            "   vTexPosition = aTexPosition;" +
             "}"
 
     private val fragmentShaderCode =
@@ -26,7 +26,7 @@ class Square(floatArray: FloatArray) {
             "uniform sampler2D uTexture;" +
             "varying vec2 vTexPosition;" +
             "void main() {" +
-            "gl_FragColor = texture2D(uTexture, vTexPosition);" +
+            "   gl_FragColor = texture2D(uTexture, vTexPosition);" +
             "}"
 
     // 初始化顶点缓冲
@@ -75,7 +75,6 @@ class Square(floatArray: FloatArray) {
         val positionHandle = GLES20.glGetAttribLocation(program, "aPosition")
         val textureHandle = GLES20.glGetUniformLocation(program, "uTexture")
         val texturePositionHandle = GLES20.glGetAttribLocation(program, "aTexPosition")
-
         // 绑定纹理缓冲
         GLES20.glVertexAttribPointer(texturePositionHandle, 2, GLES20.GL_FLOAT, false, 0, textureBuffer)
         GLES20.glEnableVertexAttribArray(texturePositionHandle)

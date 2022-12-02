@@ -143,7 +143,8 @@ fun EditCard() {
                     } else { // 没有权限, 尝试获取权限
                         launcher.launch(arrayOf(
                             Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.CAMERA
                         ))
                     }
 

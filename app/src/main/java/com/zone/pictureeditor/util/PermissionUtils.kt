@@ -9,6 +9,7 @@ object PermissionUtils {
     fun haveStoragePermission(): Boolean =
         havePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         && havePermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+        && havePermission(Manifest.permission.CAMERA)
 
     private fun havePermission(permission: String): Boolean =
         ContextCompat.checkSelfPermission(PEApplication.context, permission) == PackageManager.PERMISSION_GRANTED
